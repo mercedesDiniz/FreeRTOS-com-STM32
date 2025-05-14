@@ -18,10 +18,9 @@ Aqui, você encontrará recursos úteis para entender melhor o funcionamento do 
 
 Aqui estão algumas das principais ferramentas e documentos necessários para o desenvolvimento com STM32 e FreeRTOS:
 
-- **Fabricante**: [STMicroelectronics](https://www.st.com/content/st_com/en.html)
-- **STM32 MPU wiki**: [Documentação sobre STM32 MPU](https://wiki.st.com/stm32mpu)
-- **STM32 MCU wiki**: [Documentação sobre STM32 MCU](https://wiki.st.com/stm32mcu)
 - **HAL (Hardware Abstraction Layer) disponibilizado pela ST**: [Documentação HAL](https://www.st.com/content/st_com/en/search.html#q=hardware%20abstraction%20layer%20-t=resources-page=1)
+- **NUCLEO-G474RE**: [Product overview](https://www.st.com/en/evaluation-tools/nucleo-g474re.html)
+- **Site Oficial do FreeRTOS**: https://www.freertos.org/
 
 ### Ferramentas de Desenvolvimento
 
@@ -37,8 +36,47 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
 ### 1. [Introdução ao Curso FreeRTOS Essencial](#1-introdução-ao-curso-freertos-essencial)
 
 ### 2. [Introdução ao FreeRTOS](#2-introdução-ao-freertos)
+ - **Principais Características:**
+    - Core em tempo real
+    - Kernel leve
+    - Gerenciamento (sincronização e comunicação) de Tasks
+    - Times
+    - Gerenciamento de Memoria
+    - Multiplataforma
 
 ### 3. [Documentação e Padronização do FreeRTOS](#3-documentação-e-padronização-do-freertos)
+
+- [FreeRTOS Documentation](https://www.freertos.org/Documentation/00-Overview)
+
+- [Books and manual](https://www.freertos.org/Documentation/02-Kernel/07-Books-and-manual/01-RTOS_book)
+
+- [Supported Devices](https://www.freertos.org/Documentation/02-Kernel/03-Supported-devices/00-Supported-devices)
+
+- **Convenções**
+ 
+    - Para variáveis:
+
+        ![alt text](docs/imgs/def_variables.png)
+
+        ![alt text](docs/imgs/variables_prefix.png)
+
+    - Para funções:
+
+        ![alt text](docs/imgs/convencao_fun.png)
+
+    - Para macros: Sempre escrita em *upper case*, exceto o seu prefixo.
+
+        ![alt text](docs/imgs/convencao_macro.png)
+
+- **Estrutura dos diretórios**
+    ```bash
+    ├── Root
+    │   ├── examples
+    │   ├── include
+    │   └── portable
+    |       ├── MenMang
+    |       └── {Compiler}/{Core}
+    ```
 
 ### 4. [Instalando o FreeRTOS no Microcontrolador](#4-instalando-o-freertos-no-microcontrolador)
 
