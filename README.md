@@ -80,6 +80,25 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
 
 ### 4. [Instalando o FreeRTOS no Microcontrolador](#4-instalando-o-freertos-no-microcontrolador)
 
+- **Método 1 (Easy):** através no STMCubeIDE (CMSIS-RTOS)
+
+    ![alt text](docs/imgs/cmsis.png)
+
+    - Habilitar:
+
+        ![alt text](docs/imgs/config_freertos_cubeide.png)
+    
+        **Importante:** Em ``SYS Mode Configuration``, utilize um ``Timebase Source`` diferente do ``SysTick``, pois esse será exclusivo do FreeRTOS. E em ``Advanced settings``, deixe o ``USE_NEWLIB_REENTRANT`` habilitado.
+
+- **Método 2 (Hard):** importando do projeto no Github e instalando manualmente. 
+
+1. Criar o projeto e configurar o ``SysTick``.
+2. Download do FreeRTOS.
+3. Remover os arquivos desnecessários do ``/portable``.
+4. Copiar a template ``FreeRTOSConfig.h``.
+5. Importar os arquivos do diretório ``/portable`` e indicar os caminhos de compilação.
+6. Configurar as interrupções (``SysTick``, ``SVC``, ``PendSV``) e o ``FreeRTOSConfig.h``.
+
 ### 5. [Entendendo as Tarefas (Tasks)](#5-entendendo-as-tarefas-tasks)
 
 ### 6. [Entendendo as Filas (Queues)](#6-entendendo-as-filas-queues)
