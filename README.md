@@ -98,15 +98,15 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
 
     2. **Download do FreeRTOS:**
 
-        No repositório do [GitHub do FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel), baixei/clone o kernel no diretório do projeto.
+        No repositório do [GitHub do FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel), baixe/clone o kernel no diretório do projeto.
 
-        **Obs.:** Delete os arquivos ``cmake_example`` e ``coverity`` do diretório ``/examples``, caso existam, para evitar erros de compilação.
+        **Obs.:** Delete os arquivos ``cmake_example`` e ``coverity`` do diretório **``/examples``**, caso existam, para evitar erros de compilação.
 
     3. **Remover os arquivos desnecessários do diretório `/portable`**
 
         O diretório `/portable` contém diversos compiladores, porém **devemos manter apenas o compilador `GCC`**, pois é o utilizado pelo **STM32CubeIDE**. Também devemos manter o diretório `MemMang`, que contém os arquivos responsáveis pelo gerenciamento de **memória dinâmica e estática** do microcontrolador. **Todos os demais diretórios dentro de `/portable` devem ser removidos**.
 
-        Para confirmar qual compilador está sendo usado no STM32CubeIDE, acesse as **Propriedades do Projeto**, vá até **`C/C++ Build` > `Settings`** e verifique os campos correspondentes:
+        Para confirmar qual compilador está sendo usado no STM32CubeIDE, acesse as **`Properties`** do projeto, vá até **`C/C++ Build` > `Settings`** e verifique os campos correspondentes:
 
         ![alt text](docs/imgs/verificar_compilador_stmcubeide.png)
 
@@ -127,8 +127,33 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
         │   └── readme.txt
         ```
 
+        Para que o **STMCubeIDE** encontre esses os arquivos, em **`Properties`** do projeto, vá até **`C/C++ General` > `Path and Symbols` > `Source Location`** e 
+        adicione o caminho para a o diretório onde o FreeRTOS foi baixado/clonado, como indicado abaixo:
+
+        ![alt text](docs/imgs/add_path_source.png)
+
+        Depois, ainda em **`C/C++ General` > `Path and Symbols`**, vá em **`Includes`** e 
+        adicione o caminho para a o diretório **`/portable/GCC/ARM_CM4F`** e para o **`/include`**, como indicado abaixo:
+
+        ![alt text](docs/imgs/add_path_includes.png)
+
     4. **Copiar a template ``FreeRTOSConfig.h``.**
+
+        No diretório **``/examples/template_configuration``**, copie o arquivo `FreeRTOSConfig.h` para o diretório **`/{ProjName}/Core/Inc`**.
+
+        No arquivo `FreeRTOSConfig.h` do diretório **`/{ProjName}/Core/Inc`**,  temos que realizar algumas configurações:
+
+        |Configuração|Descrição|Def p/ o NUCLEO-L476RG|
+        |:---|:---:|---:|
+        |`configCPU_CLOCK_HZ`|Frequência do clock|6|
+        |B|2||
+
+
+
+
+        
     5. **Importar os arquivos do diretório ``/portable`` e indicar os caminhos de compilação.**
+
     6. **Configurar as interrupções (``SysTick``, ``SVC``, ``PendSV``) e o ``FreeRTOSConfig.h``.**
 
 ### 5. [Entendendo as Tarefas (Tasks)](#5-entendendo-as-tarefas-tasks)
