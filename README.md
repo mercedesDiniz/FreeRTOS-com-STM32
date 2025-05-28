@@ -19,7 +19,7 @@ Aqui, você encontrará recursos úteis para entender melhor o funcionamento do 
 Aqui estão algumas das principais ferramentas e documentos necessários para o desenvolvimento com STM32 e FreeRTOS:
 
 - **HAL (Hardware Abstraction Layer) disponibilizado pela ST**: [Documentação HAL](https://www.st.com/content/st_com/en/search.html#q=hardware%20abstraction%20layer%20-t=resources-page=1)
-- **NUCLEO-G474RE**: [Product overview](https://www.st.com/en/evaluation-tools/nucleo-g474re.html)
+- Opções de placas da ST: [NUCLEO-G474RE](https://www.st.com/en/evaluation-tools/nucleo-g474re.html), [NUCLEO-L476RG](https://www.st.com/en/evaluation-tools/nucleo-l476rg.html#overview), [NUCLEO-H755ZI-Q](https://www.st.com/en/evaluation-tools/nucleo-h755zi-q.html#overview), etc.
 - **Site Oficial do FreeRTOS**: https://www.freertos.org/
 
 ### Ferramentas de Desenvolvimento
@@ -92,12 +92,44 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
 
 - **Método 2 (Hard):** importando do projeto no Github e instalando manualmente. 
 
-1. Criar o projeto e configurar o ``SysTick``.
-2. Download do FreeRTOS.
-3. Remover os arquivos desnecessários do ``/portable``.
-4. Copiar a template ``FreeRTOSConfig.h``.
-5. Importar os arquivos do diretório ``/portable`` e indicar os caminhos de compilação.
-6. Configurar as interrupções (``SysTick``, ``SVC``, ``PendSV``) e o ``FreeRTOSConfig.h``.
+    1. **Criar o projeto e configurar o ``SysTick``:**
+
+        Crie um novo projeto no STMCubeIDE, e em ``SYS Mode Configuration``, utilize um ``Timebase Source`` diferente do ``SysTick``. 
+
+    2. **Download do FreeRTOS:**
+
+        No repositório do [GitHub do FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel), baixei/clone o kernel no diretório do projeto.
+
+        **Obs.:** Delete os arquivos ``cmake_example`` e ``coverity`` do diretório ``/examples``, caso existam, para evitar erros de compilação.
+
+    3. **Remover os arquivos desnecessários do diretório `/portable`**
+
+        O diretório `/portable` contém diversos compiladores, porém **devemos manter apenas o compilador `GCC`**, pois é o utilizado pelo **STM32CubeIDE**. Também devemos manter o diretório `MemMang`, que contém os arquivos responsáveis pelo gerenciamento de **memória dinâmica e estática** do microcontrolador. **Todos os demais diretórios dentro de `/portable` devem ser removidos**.
+
+        Para confirmar qual compilador está sendo usado no STM32CubeIDE, acesse as **Propriedades do Projeto**, vá até **`C/C++ Build` > `Settings`** e verifique os campos correspondentes:
+
+        ![alt text](docs/imgs/verificar_compilador_stmcubeide.png)
+
+        Dentro de `/portable/GCC`, há suporte para várias arquiteturas de microcontroladores. Como o projeto utiliza a placa **NUCLEO-L476RG**, que possui um microcontrolador **ARM Cortex-M4 de 32 bits com FPU (suporte a ponto flutuante)**, devemos **manter apenas o diretório `ARM_CM4F`** e remover os demais.
+
+        No diretório `/portable/MemMang`, **mantenha apenas o arquivo `heap_4.c`**, que é o gerenciador de heap recomendado para a maioria dos casos. Os outros arquivos podem ser excluídos.
+
+        Ao final, a estrutura do diretório `/portable` deve ficar da seguinte forma:
+
+        ```bash
+        ├── portable
+        │   ├── GCC
+        │   │   └── ARM_CM4F
+        │   ├── MemMang
+        │   │   ├── heap_4.c
+        │   │   └── ReadMe           
+        │   ├── CMakeLists.txt
+        │   └── readme.txt
+        ```
+
+    4. **Copiar a template ``FreeRTOSConfig.h``.**
+    5. **Importar os arquivos do diretório ``/portable`` e indicar os caminhos de compilação.**
+    6. **Configurar as interrupções (``SysTick``, ``SVC``, ``PendSV``) e o ``FreeRTOSConfig.h``.**
 
 ### 5. [Entendendo as Tarefas (Tasks)](#5-entendendo-as-tarefas-tasks)
 
