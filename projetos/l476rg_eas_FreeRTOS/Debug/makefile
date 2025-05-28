@@ -64,8 +64,8 @@ all: main-build
 main-build: l476rg_eas_FreeRTOS.elf secondary-outputs
 
 # Tool invocations
-l476rg_eas_FreeRTOS.elf l476rg_eas_FreeRTOS.map: $(OBJS) $(USER_OBJS) C:\Users\Mercedes\ Diniz\Documents\LASSE\Enguia\treinamentos\freertos_stm32\projetos\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "l476rg_eas_FreeRTOS.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Mercedes Diniz\Documents\LASSE\Enguia\treinamentos\freertos_stm32\projetos\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="l476rg_eas_FreeRTOS.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+l476rg_eas_FreeRTOS.elf l476rg_eas_FreeRTOS.map: $(OBJS) $(USER_OBJS) C:\Users\Mercedes\ Diniz\Documents\LASSE\Enguia\treinamentos\freertos_stm32\projetos\l476rg_eas_FreeRTOS\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "l476rg_eas_FreeRTOS.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Mercedes Diniz\Documents\LASSE\Enguia\treinamentos\freertos_stm32\projetos\l476rg_eas_FreeRTOS\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="l476rg_eas_FreeRTOS.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
