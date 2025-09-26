@@ -104,7 +104,7 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
 
         No repositório do [GitHub do FreeRTOS](https://github.com/FreeRTOS/FreeRTOS-Kernel), baixe/clone o kernel no diretório do projeto.
 
-        **Obs.:** Delete os arquivos ``cmake_example`` e ``coverity`` do diretório **``/examples``**, caso existam, para evitar erros de compilação.
+        **Obs.:** Delete ou configure o compilador para ignorar os arquivos ``cmake_example`` e ``coverity`` do diretório **``/examples``**, caso existam, para evitar erros de compilação.
 
     3. **Remover os arquivos desnecessários do diretório `/portable`**
 
@@ -124,13 +124,16 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
         ├── portable
         │   ├── GCC
         │   │   └── ARM_CM4F
+        │   │       ├── port.c
+        │   │       └── portmacro.h
         │   ├── MemMang
-        │   │   ├── heap_4.c
+        │   │   ├── heap_x.c
         │   │   └── ReadMe           
         │   ├── CMakeLists.txt
         │   └── readme.txt
         ```
 
+    4. **Indicar os caminhos de compilação**
         Para que o **STMCubeIDE** encontre esses os arquivos, em **`Properties`** do projeto, vá até **`C/C++ General` > `Path and Symbols` > `Source Location`** e 
         adicione o caminho para a o diretório onde o FreeRTOS foi baixado/clonado, como indicado abaixo:
 
@@ -141,24 +144,77 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
 
         ![alt text](docs/imgs/add_path_includes.png)
 
-    4. **Copiar a template ``FreeRTOSConfig.h``.**
+    5. **Copiar a template ``FreeRTOSConfig.h``**
 
         No diretório **``/examples/template_configuration``**, copie o arquivo `FreeRTOSConfig.h` para o diretório **`/{ProjName}/Core/Inc`**.
 
         No arquivo `FreeRTOSConfig.h` do diretório **`/{ProjName}/Core/Inc`**,  temos que realizar algumas configurações:
 
         |Configuração|Descrição|Def p/ o NUCLEO-L476RG|
-        |:---|:---:|---:|
-        |`configCPU_CLOCK_HZ`|Frequência do clock|6|
-        |B|2||
+        |:---|:---|:---:|
+        |`configCPU_CLOCK_HZ`|Frequência do clock|`SystemCoreClock`*|
+        |`configUSE_TIME_SLICING`|Permite que o scheduler alterne entras as tasks em estado ponto|1|
+        |`configTICK_TYPE_WIDTH_IN_BITS`|Tamanho da variável `TickType_t`|`TICK_TYPE_WIDTH_32_BITS`*|
+        |`configCHECK_HANDLER_INSTALLATION`||0|
+        |`configCHECK_FOR_STACK_OVERFLOW`||0|
+        |`configMAX_API_CALL_INTERRUPT_PRIORITY`|Nível de prioridade mais alto que chamadas do FreeRTOs podem utilizar das disponíveis pelo microcontrolador*|`configMAX_SYSCALL_INTERRUPT_PRIORITY`|
+        |`configMAX_SYSCALL_INTERRUPT_PRIORITY`||`( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )`*|
+        |`configKERNEL_INTERRUPT_PRIORITY`||`( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )`*|
 
+        \* Importe o arquivo `stm32l476xx.h` para ter acesso a variável `SystemCoreClock` que contem a frequência do clock configurada.
 
+        \* O valor `xx` de `TICK_TYPE_WIDTH_xx_BITS` deve ser definido de acordo com a arquitetura do microcontrolador.
 
+        \* O [STM32L476RG](https://www.st.com/resource/en/datasheet/stm32l476rg.pdf) usa 4 bits para os níveis de prioridade, tendo assim existem 16 níveis de interrupção. Crie a variável `configPRIO_BITS` que deve buscar em `__NVIC_PRIO_BITS` o número de bits para os níveis de prioridade do microcontrolador.
 
-        
-    5. **Importar os arquivos do diretório ``/portable`` e indicar os caminhos de compilação.**
+        \* Inclua no  `FreeRTOSConfig.h` o seguinte trecho de código:
+
+        ~~~c++
+        /******************************************************************************/
+        /* Interrupt nesting behaviour configuration. *********************************/
+        /******************************************************************************/
+
+        /* Cortex-M specific definitions. */
+        #ifdef __NVIC_PRIO_BITS
+        /* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
+        #define configPRIO_BITS         __NVIC_PRIO_BITS
+        #else
+        #define configPRIO_BITS         4
+        #endif
+
+        #define configLIBRARY_LOWEST_INTERRUPT_PRIORITY   		15
+
+        #define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 	5
+        #define configKERNEL_INTERRUPT_PRIORITY          ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
+        ~~~
 
     6. **Configurar as interrupções (``SysTick``, ``SVC``, ``PendSV``) e o ``FreeRTOSConfig.h``.**
+
+        Em `/{ProjName}/Core/Src/stm32l4xx_it.c` temos todas as funções de tratamento de interrupções que são geradas pelo microcontrolador e entre elas temos: `SVC_Handler`, `PendSV_Handler` e `SysTick_Handler`.
+
+        Em `/{ProjName}/libs/FreeRTOS/portable/GCC/ARM_CM4F/port.c`, temos os protótipos da *exception handlers*: `xPortPendSVHandler`, `xPortSysTickHandler` e `vPortSVCHandler`. Copie as mesmas para o `stm32l4xx_it.c` e as chame dentro de sua respectiva funções de tratamento:
+        
+        ~~~c++
+        /* Private function prototypes -----------------------------------------------*/
+        /* USER CODE BEGIN PFP */
+        void xPortPendSVHandler( void );
+        void xPortSysTickHandler( void );
+        void vPortSVCHandler( void );
+        /* USER CODE END PFP */
+        // ...
+        void SVC_Handler(void){
+            vPortSVCHandler();
+        }
+        // ...
+        void PendSV_Handler(void){
+            xPortPendSVHandler();
+        }
+        // ...
+        void SysTick_Handler(void){
+            xPortSysTickHandler();
+        }
+        ~~~
+
 
 ### 5. [Entendendo as Tarefas (Tasks)](#5-entendendo-as-tarefas-tasks)
 
