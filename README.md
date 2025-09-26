@@ -73,6 +73,10 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
     ├── Root
     │   ├── examples
     │   ├── include
+    |   |   ├── FreeRTOS.h
+    |   |   ├── task.h
+    |   |   ├── timers.h
+    |   |   └── ...
     │   └── portable
     |       ├── MenMang
     |       └── {Compiler}/{Core}
