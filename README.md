@@ -218,6 +218,31 @@ Este curso é dividido em 10 módulos principais, que cobrem desde a introduçã
 
 ### 5. [Entendendo as Tarefas (Tasks)](#5-entendendo-as-tarefas-tasks)
 
+![alt text](docs/imgs/task_intro.png)
+
+**Estados das Tasks**
+- ***Running***: Tarefas em execução, usando a CPU.
+- ***Ready***: Tarefas prontas para executar, estão na fila para ter acesso a CPU.
+- ***Blocked***: Tarefa bloqueada, esperando o resultado ou a ocorrência de um evento externo.
+- ***Suspended***: Tarefa suspensa, determinada pela implementação da aplicação.
+
+    ![alt text](docs/imgs/task_states.png)
+
+**Task API**
+|Função|Descrição|
+|:---|:---|
+|`xTaskCreate()`|Cria um nova tarefa com alocação de memoria dinâmica|
+|`vTaskDelete()`|Deleta uma tarefa do *schedular* e libera os recursos|
+|`vTaskDelay()`|Deixa a tarefa no estado de *blocked* por um tempo predefinido|
+|`vTaskDelayUntil()`|Similar ao `vTaskDelay()`, mas com uma frequência fixa|
+|`vTaskSuspend()`|Deixa a tarefa no estado de *suspended* por um tempo indefinido|
+|`vTaskResume()`|Tira a tarefa no estado de *suspended*|
+
+**Documentação Base:**
+- [Task Creation](https://www.freertos.org/Documentation/02-Kernel/04-API-references/01-Task-creation/00-TaskHandle)
+- [Task Utilities](https://www.freertos.org/Documentation/02-Kernel/04-API-references/03-Task-utilities/00-Task-utilities)
+- [Task Control](https://www.freertos.org/Documentation/02-Kernel/04-API-references/02-Task-control/00-Task-control)
+
 ### 6. [Entendendo as Filas (Queues)](#6-entendendo-as-filas-queues)
 
 ### 7. [Entendendo os Semáforos (Semaphores)](#7-entendendo-os-semaforos-semaphores)
